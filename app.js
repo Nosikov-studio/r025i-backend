@@ -11,14 +11,14 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
    
 // установка схемы
-const userScheme = new Schema({
+const colltabSchema = new Schema({
     id: Number,
     name: String,
     age: Number
-});
+}, { collection: 'colltab' } );
 
 // определяем модель User
-const User = mongoose.model("User", userScheme);
+const Colltab = mongoose.model("Colltab", colltabSchema);
 //**************************************** */
 
 // const mongoClient = new MongoClient("mongodb://127.0.0.1:27017/");
@@ -31,7 +31,7 @@ async function run() {
    // await mongoClient.connect();
     console.log("Подключение установлено");
     // получаем все объекты из БД
-    const users = await User.find({});
+    const users = await Colltab.find({});
     console.log(users);
     // Получаем базу данных и коллекцию
     // const db = mongoClient.db("expom");
@@ -47,11 +47,11 @@ async function run() {
       try {
         // Получаем все документы из коллекции
        
-      const us = await User.find({});
+      const us = await Colltab.find({});
           console.log(us);
-        res.status(200).json(us);
-        // res.render("index.hbs", {
-        // users: us  });
+        //res.status(200).json(us);
+        res.render("index.hbs", {
+        users: us  });
 
       } catch (err) {
         res.status(500).json({ message: "Ошибка при получении данных", error: err });
