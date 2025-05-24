@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require('cors');
-const { ObjectId } = require("mongodb");
-const MongoClient = require('mongodb').MongoClient; // 
+//const { ObjectId } = require("mongodb");
+//const MongoClient = require('mongodb').MongoClient; // 
 const app = express();
 const urlencodedParser = express.urlencoded({extended: false});
 
@@ -49,9 +49,9 @@ async function run() {
        
       const us = await User.find({});
           console.log(us);
-        // res.status(200).json(us);
-        res.render("index.hbs", {
-        users: us  });
+        res.status(200).json(us);
+        // res.render("index.hbs", {
+        // users: us  });
 
       } catch (err) {
         res.status(500).json({ message: "Ошибка при получении данных", error: err });
