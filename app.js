@@ -6,29 +6,49 @@ const app = express();
 const urlencodedParser = express.urlencoded({extended: false});
 
 app.set("view engine", "hbs");
+//***************************************** */
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+   
+// установка схемы
+const userScheme = new Schema({
+    id: Number,
+    name: String,
+    age: Number
+});
 
+// определяем модель User
+const User = mongoose.model("User", userScheme);
+//**************************************** */
 
-const mongoClient = new MongoClient("mongodb://127.0.0.1:27017/");
+// const mongoClient = new MongoClient("mongodb://127.0.0.1:27017/");
+
 async function run() {
     try {
          // Подключаемся к серверу MongoDB
-    await mongoClient.connect();
+        // подключемся к базе данных
+    await mongoose.connect("mongodb://127.0.0.1:27017/expom");     
+   // await mongoClient.connect();
     console.log("Подключение установлено");
-
+    // получаем все объекты из БД
+    const users = await User.find({});
+    console.log(users);
     // Получаем базу данных и коллекцию
-    const db = mongoClient.db("expom");
-    const collection = db.collection('colltab');
+    // const db = mongoClient.db("expom");
+    // const collection = db.collection('colltab');
 
-    app.locals.collection = collection;
+//     app.locals.collection = collection;
 
-    app.use(express.json());
-    app.use(cors()); // если нужен CORS
+//     app.use(express.json());
+//     app.use(cors()); // если нужен CORS
 
 //************** */ получаем все данные в шаблон*****************
         app.get('/', async (req, res) => {
       try {
         // Получаем все документы из коллекции
-        const us = await collection.find().toArray();
+       
+      const us = await User.find({});
+          console.log(us);
         // res.status(200).json(us);
         res.render("index.hbs", {
         users: us  });
@@ -37,85 +57,66 @@ async function run() {
         res.status(500).json({ message: "Ошибка при получении данных", error: err });
       }
     });
-//************** */ Вставляем запись из шаблона*****************
-        app.post('/create', urlencodedParser, async (req, res) => {
-      try {
-         const name = req.body.name;
-         const age = req.body.age;
-         const newUser = { name, age };
-        // Получаем все документы из коллекции
-        result = await collection.insertOne(newUser);
-        // res.status(200).json(us);
-        res.redirect("/");
+// //************** */ Вставляем запись из шаблона*****************
+//         app.post('/create', urlencodedParser, async (req, res) => {
+//       try {
+//          const name = req.body.name;
+//          const age = req.body.age;
+//          const newUser = { name, age };
+//         // Получаем все документы из коллекции
+//         result = await collection.insertOne(newUser);
+//         // res.status(200).json(us);
+//         res.redirect("/");
 
-      } catch (err) {
-        res.status(500).json({ message: "Ошибка", error: err });
-      }
-    });
-//************** */ получаем все данные по API (json)*****************
-        app.get('/api', async (req, res) => {
-      try {
-        // Получаем все документы из коллекции
-        const us = await collection.find().toArray();
-        res.status(200).json(us);
+//       } catch (err) {
+//         res.status(500).json({ message: "Ошибка", error: err });
+//       }
+//     });
+// //************** */ получаем все данные по API (json)*****************
+//         app.get('/api', async (req, res) => {
+//       try {
+//         // Получаем все документы из коллекции
+//         const us = await collection.find().toArray();
+//         res.status(200).json(us);
         
 
-      } catch (err) {
-        res.status(500).json({ message: "Ошибка при получении данных", error: err });
-      }
-    });
+//       } catch (err) {
+//         res.status(500).json({ message: "Ошибка при получении данных", error: err });
+//       }
+//     });
 
- //************** */ получаем один документ по API (json) по _id (у всех есть)*****************
+//  //************** */ получаем один документ по API (json) по _id (у всех есть)*****************
 
-app.get('/api/:_id', async (req, res) => {
-  try {
-    const id = req.params._id;
+// app.get('/api/:_id', async (req, res) => {
+//   try {
+//     const id = req.params._id;
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Неверный формат id" });
-    }
+//     if (!ObjectId.isValid(id)) {
+//       return res.status(400).json({ message: "Неверный формат id" });
+//     }
 
-    const u = await collection.findOne({ _id: new ObjectId(id) });
+//     const u = await collection.findOne({ _id: new ObjectId(id) });
 
-    if (!u) {
-      return res.status(404).json({ message: "Документ не найден" });
-    }
+//     if (!u) {
+//       return res.status(404).json({ message: "Документ не найден" });
+//     }
 
-    res.status(200).json(u);
-  } catch (err) {
-    res.status(500).json({ message: "Ошибка при получении данных", error: err.message });
-  }
-});
+//     res.status(200).json(u);
+//   } catch (err) {
+//     res.status(500).json({ message: "Ошибка при получении данных", error: err.message });
+//   }
+// });
    
  
 
-//************** */ Вставляем документ по API *****************
-        app.post('/api', urlencodedParser, async (req, res) => {
-      try {
-         const name = req.body.name;
-         const age = req.body.age;
-         const newUser = { name, age };
-        // Получаем все документы из коллекции
-        result = await collection.insertOne(newUser);
-        // res.status(200).json(us);
-        res.json(newUser);
-
-      } catch (err) {
-        res.status(500).json({ message: "Ошибка", error: err });
-      }
-    });
-
-//************** */ Редактируем конкретный документ по API ***************** ЕСТЬ КОСЯК!!! (используется только id без _id)
- // ДОРАБОТАТЬ!     
-// app.post('/api/edit', urlencodedParser, async (req, res) => {
+// //************** */ Вставляем документ по API *****************
+//         app.post('/api', urlencodedParser, async (req, res) => {
 //       try {
-         
-//          const id = req.body._id;
 //          const name = req.body.name;
 //          const age = req.body.age;
-//          const newUser = { id, name, age };
+//          const newUser = { name, age };
 //         // Получаем все документы из коллекции
-//         result = await collection.findOneAndUpdate({_id: id}, { $set: {name: name, age: age}}, { returnDocument: "after" });;
+//         result = await collection.insertOne(newUser);
 //         // res.status(200).json(us);
 //         res.json(newUser);
 
@@ -124,52 +125,71 @@ app.get('/api/:_id', async (req, res) => {
 //       }
 //     });
 
+// //************** */ Редактируем конкретный документ по API ***************** ЕСТЬ КОСЯК!!! (используется только id без _id)
+//  // ДОРАБОТАТЬ!     
+// // app.post('/api/edit', urlencodedParser, async (req, res) => {
+// //       try {
+         
+// //          const id = req.body._id;
+// //          const name = req.body.name;
+// //          const age = req.body.age;
+// //          const newUser = { id, name, age };
+// //         // Получаем все документы из коллекции
+// //         result = await collection.findOneAndUpdate({_id: id}, { $set: {name: name, age: age}}, { returnDocument: "after" });;
+// //         // res.status(200).json(us);
+// //         res.json(newUser);
 
-app.post('/api/edit', urlencodedParser, async (req, res) => {
-  try {
-    const id = req.body._id;
-    const name = req.body.name;
-    const age = req.body.age;
+// //       } catch (err) {
+// //         res.status(500).json({ message: "Ошибка", error: err });
+// //       }
+// //     });
 
-    if (!ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Неверный формат _id" });
-    }
 
-    const filter = { _id: new ObjectId(id) };
-    const updateDoc = {
-      $set: {
-        name: name,
-        age: age
-      }
-    };
+// app.post('/api/edit', urlencodedParser, async (req, res) => {
+//   try {
+//     const id = req.body._id;
+//     const name = req.body.name;
+//     const age = req.body.age;
 
-    const options = { returnDocument: "after" }; // Возвращает обновленный документ
+//     if (!ObjectId.isValid(id)) {
+//       return res.status(400).json({ message: "Неверный формат _id" });
+//     }
 
-    const result = await collection.findOneAndUpdate(filter, updateDoc, options);
+//     const filter = { _id: new ObjectId(id) };
+//     const updateDoc = {
+//       $set: {
+//         name: name,
+//         age: age
+//       }
+//     };
 
-    // if (!result.value) {
-    //   return res.status(404).json({ message: "Документ не найден" });
-    // }
+//     const options = { returnDocument: "after" }; // Возвращает обновленный документ
 
-    res.status(200).json(updateDoc);
+//     const result = await collection.findOneAndUpdate(filter, updateDoc, options);
 
-  } catch (err) {
-    res.status(500).json({ message: "Ошибка при обновлении", error: err.message });
-  }
-});
-//************** */ Удаляем документ по API *****************
-        app.post('/delete/:_id',urlencodedParser, async (req, res) => {
-      try {
-          const id = req.params._id;
-        // Получаем все документы из коллекции
-        result = await collection.deleteOne({_id: new ObjectId(id)});
-        // res.status(200).json(us);
-        res.json(result);
+//     // if (!result.value) {
+//     //   return res.status(404).json({ message: "Документ не найден" });
+//     // }
 
-      } catch (err) {
-        res.status(500).json({ message: "Ошибка", error: err });
-      }
-    });
+//     res.status(200).json(updateDoc);
+
+//   } catch (err) {
+//     res.status(500).json({ message: "Ошибка при обновлении", error: err.message });
+//   }
+// });
+// //************** */ Удаляем документ по API *****************
+//         app.post('/delete/:_id',urlencodedParser, async (req, res) => {
+//       try {
+//           const id = req.params._id;
+//         // Получаем все документы из коллекции
+//         result = await collection.deleteOne({_id: new ObjectId(id)});
+//         // res.status(200).json(us);
+//         res.json(result);
+
+//       } catch (err) {
+//         res.status(500).json({ message: "Ошибка", error: err });
+//       }
+//     });
 
 
 // Запускаем сервер только после успешного подключения к БД
