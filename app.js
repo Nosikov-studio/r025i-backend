@@ -17,7 +17,7 @@ const colltabSchema = new Schema({
     age: Number
 }, { collection: 'colltab' } );
 
-// определяем модель User
+// определяем модель Colltab
 const Colltab = mongoose.model("Colltab", colltabSchema);
 //**************************************** */
 
@@ -25,14 +25,14 @@ const Colltab = mongoose.model("Colltab", colltabSchema);
 
 async function run() {
     try {
-         // Подключаемся к серверу MongoDB
+         
         // подключемся к базе данных
     await mongoose.connect("mongodb://127.0.0.1:27017/expom");     
-   // await mongoClient.connect();
+   
     console.log("Подключение установлено");
     // получаем все объекты из БД
-    const users = await Colltab.find({});
-    console.log(users);
+    // const users = await Colltab.find({});
+    // console.log(users);
 
 
 //************** */ получаем все данные в шаблон*****************
@@ -89,6 +89,22 @@ async function run() {
 
 
 //  //************** */ получаем один документ по API (json) по _id (у всех есть)*****************
+
+        app.get('/api/:_id', async (req, res) => {
+      try {
+        const id = req.params._id;
+        // Получаем все документы из коллекции
+       
+      const u = await Colltab.find({id: id});
+          console.log(us);
+        res.status(200).json(u);
+        
+
+      } catch (err) {
+        res.status(500).json({ message: "Ошибка при получении данных", error: err });
+      }
+    });
+
 
 // app.get('/api/:_id', async (req, res) => {
 //   try {
