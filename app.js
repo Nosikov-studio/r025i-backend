@@ -96,7 +96,7 @@ async function run() {
         // Получаем все документы из коллекции
        
       const u = await Colltab.find({id: id});
-          console.log(us);
+          console.log(u);
         res.status(200).json(u);
         
 
