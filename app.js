@@ -15,7 +15,7 @@ const colltabSchema = new Schema({
     id: Number,
     name: String,
     age: Number
-}, { collection: 'colltab' } );
+}, { collection: 'colltab' } ); 
 
 // определяем модель Colltab
 const Colltab = mongoose.model("Colltab", colltabSchema);
