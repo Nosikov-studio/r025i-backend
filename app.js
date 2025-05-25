@@ -162,6 +162,40 @@ async function run() {
 //     });
 
 // //************** */ Редактируем конкретный документ по API ***************** ЕСТЬ КОСЯК!!! (используется только id без _id)
+        app.post('/api/edit',urlencodedParser, async (req, res) => {
+      try {
+        // Получаем      
+         const id = req.body._id;
+         const name = req.body.name;
+         const age = req.body.age;
+         const newUser = { name, age };
+
+             if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Неверный формат _id" });
+    }
+
+    const filter = { _id: new ObjectId(id) };
+    const updateDoc = {
+      $set: {
+        name: name,
+        age: age
+      }
+    };
+
+    const options = { returnDocument: "after" }; // Возвращает обновленный документ
+    const result = await Colltab.findOneAndUpdate(filter, updateDoc, options);
+    console.log(result);
+         
+        res.status(200).json(result);
+                
+
+      } catch (err) {
+        res.status(500).json({ message: "Ошибка при получении данных", error: err });
+      }
+    });
+
+
+
 //  // ДОРАБОТАТЬ!     
 // // app.post('/api/edit', urlencodedParser, async (req, res) => {
 // //       try {
