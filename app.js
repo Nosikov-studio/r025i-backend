@@ -22,7 +22,7 @@ const Colltab = mongoose.model("Colltab", colltabSchema);
 //**************************************** */
 
 
-
+//////////////////// НАЧАЛО ФУНКЦИИ run() ////////////////////////////////////
 async function run() {
     try {
          
@@ -30,10 +30,6 @@ async function run() {
     await mongoose.connect("mongodb://127.0.0.1:27017/expom");     
    
     console.log("Подключение установлено");
-    // получаем все объекты из БД
-    // const users = await Colltab.find({});
-    // console.log(users);
-
 
 //************** */ получаем все данные в шаблон*****************
         app.get('/', async (req, res) => {
@@ -93,8 +89,7 @@ async function run() {
         app.get('/api/:_id', async (req, res) => {
       try {
         const id = req.params._id;
-        // Получаем все документы из коллекции
-       
+        // Получаем        
       const u = await Colltab.find({_id: id});
           console.log(u);
         res.status(200).json(u);
@@ -106,27 +101,6 @@ async function run() {
     });
 
 
-// app.get('/api/:_id', async (req, res) => {
-//   try {
-//     const id = req.params._id;
-
-//     if (!ObjectId.isValid(id)) {
-//       return res.status(400).json({ message: "Неверный формат id" });
-//     }
-
-//     const u = await collection.findOne({ _id: new ObjectId(id) });
-
-//     if (!u) {
-//       return res.status(404).json({ message: "Документ не найден" });
-//     }
-
-//     res.status(200).json(u);
-//   } catch (err) {
-//     res.status(500).json({ message: "Ошибка при получении данных", error: err.message });
-//   }
-// });
-   
- 
 
 // //************** */ Вставляем документ по API *****************
         app.post('/api',urlencodedParser, async (req, res) => {
@@ -149,7 +123,7 @@ async function run() {
     });
 
 
-// //************** */ Редактируем конкретный документ по API ***************** ЕСТЬ КОСЯК!!! (используется только id без _id)
+// //************** */ Редактируем конкретный документ по API ***************** 
         app.post('/api/edit',urlencodedParser, async (req, res) => {
       try {
         // Получаем      
@@ -183,7 +157,6 @@ async function run() {
     });
 
 
-
 // //************** */ Удаляем документ по API *****************
 
         app.post('/delete/:_id',urlencodedParser, async (req, res) => {
@@ -208,31 +181,19 @@ async function run() {
     });
 
 
-
-//         app.post('/delete/:_id',urlencodedParser, async (req, res) => {
-//       try {
-//           const id = req.params._id;
-//         // Получаем все документы из коллекции
-//         result = await collection.deleteOne({_id: new ObjectId(id)});
-//         // res.status(200).json(us);
-//         res.json(result);
-
-//       } catch (err) {
-//         res.status(500).json({ message: "Ошибка", error: err });
-//       }
-//     });
-
-
 // Запускаем сервер только после успешного подключения к БД
         app.listen(40444, () => {
         console.log('Сервер запущен на http://localhost:40444');
         });
 
-    }catch(err) {
+    }
+   
+    catch(err) {
         console.log(err);
     } 
 
 }
+//////////////////// КОНЕЦ ФУНКЦИИ run() //////////////////////////////////// 
 run().catch(console.log);
 
 
