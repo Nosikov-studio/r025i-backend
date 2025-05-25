@@ -58,6 +58,27 @@ async function run() {
       }
     });
 // //************** */ Вставляем запись из шаблона*****************
+        app.post('/create', urlencodedParser, async (req, res) => {
+      try {
+        // Получаем все документы из коллекции
+        
+         const name = req.body.name;
+         const age = req.body.age;
+         const newUser = { name, age };
+         const u = new Colltab(newUser);
+    // добавляем объект в БД    
+         await u.save();
+          console.log(u);
+        //res.status(200).json(us);
+        res.redirect("/");
+
+      } catch (err) {
+        res.status(500).json({ message: "Ошибка при получении данных", error: err });
+      }
+    });
+
+
+
 //         app.post('/create', urlencodedParser, async (req, res) => {
 //       try {
 //          const name = req.body.name;
