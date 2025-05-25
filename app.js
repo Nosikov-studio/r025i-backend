@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require('cors');
 const app = express();
 const urlencodedParser = express.urlencoded({extended: false});
-
+app.use(express.json());
 app.set("view engine", "hbs");
 //***************************************** */
 const mongoose = require("mongoose");
@@ -68,20 +68,7 @@ async function run() {
       }
     });
 
-//         app.post('/create', urlencodedParser, async (req, res) => {
-//       try {
-//          const name = req.body.name;
-//          const age = req.body.age;
-//          const newUser = { name, age };
-//         // Получаем все документы из коллекции
-//         result = await collection.insertOne(newUser);
-//         // res.status(200).json(us);
-//         res.redirect("/");
 
-//       } catch (err) {
-//         res.status(500).json({ message: "Ошибка", error: err });
-//       }
-//     });
 // //************** */ получаем все данные по API (json)*****************
         app.get('/api', async (req, res) => {
       try {
