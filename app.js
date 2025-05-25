@@ -3,6 +3,7 @@ const cors = require('cors');
 const app = express();
 const urlencodedParser = express.urlencoded({extended: false});
 app.use(express.json());
+app.use(cors());
 app.set("view engine", "hbs");
 //***************************************** */
 const mongoose = require("mongoose");
