@@ -124,6 +124,28 @@ async function run() {
  
 
 // //************** */ Вставляем документ по API *****************
+        app.post('/api',urlencodedParser, async (req, res) => {
+      try {
+        // Получаем      
+
+         const name = req.body.name;
+         const age = req.body.age;
+         const newUser = { name, age };
+         const u = new Colltab(newUser);
+    // добавляем объект в БД    
+         await u.save();
+          console.log(u);
+        res.status(200).json(u);
+                
+
+      } catch (err) {
+        res.status(500).json({ message: "Ошибка при получении данных", error: err });
+      }
+    });
+
+
+
+
 //         app.post('/api', urlencodedParser, async (req, res) => {
 //       try {
 //          const name = req.body.name;
