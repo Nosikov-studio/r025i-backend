@@ -140,7 +140,7 @@ async function run() {
          const id = req.body._id;
          const name = req.body.name;
          const age = req.body.age;
-         const newUser = { name, age };
+        
 
              if (!ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Неверный формат _id" });
@@ -173,7 +173,7 @@ async function run() {
         app.post('/delete/:_id',urlencodedParser, async (req, res) => {
       try {
         // Получаем      
-         const id = req.body._id;
+         const id = req.params._id;
          
          if (!ObjectId.isValid(id)) {
       return res.status(400).json({ message: "Неверный формат _id" });
