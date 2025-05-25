@@ -7,6 +7,7 @@ app.use(cors());
 app.set("view engine", "hbs");
 //***************************************** */
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
    
 // установка схемы
