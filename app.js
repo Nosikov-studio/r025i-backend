@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require('cors');
-//const { ObjectId } = require("mongodb");
-//const MongoClient = require('mongodb').MongoClient; // 
 const app = express();
 const urlencodedParser = express.urlencoded({extended: false});
 
@@ -21,7 +19,7 @@ const colltabSchema = new Schema({
 const Colltab = mongoose.model("Colltab", colltabSchema);
 //**************************************** */
 
-// const mongoClient = new MongoClient("mongodb://127.0.0.1:27017/");
+
 
 async function run() {
     try {
@@ -33,14 +31,7 @@ async function run() {
     // получаем все объекты из БД
     const users = await Colltab.find({});
     console.log(users);
-    // Получаем базу данных и коллекцию
-    // const db = mongoClient.db("expom");
-    // const collection = db.collection('colltab');
 
-//     app.locals.collection = collection;
-
-//     app.use(express.json());
-//     app.use(cors()); // если нужен CORS
 
 //************** */ получаем все данные в шаблон*****************
         app.get('/', async (req, res) => {
@@ -77,8 +68,6 @@ async function run() {
       }
     });
 
-
-
 //         app.post('/create', urlencodedParser, async (req, res) => {
 //       try {
 //          const name = req.body.name;
@@ -94,6 +83,22 @@ async function run() {
 //       }
 //     });
 // //************** */ получаем все данные по API (json)*****************
+        app.get('/api', async (req, res) => {
+      try {
+        // Получаем все документы из коллекции
+       
+      const us = await Colltab.find({});
+          console.log(us);
+        res.status(200).json(us);
+        
+
+      } catch (err) {
+        res.status(500).json({ message: "Ошибка при получении данных", error: err });
+      }
+    });
+
+
+
 //         app.get('/api', async (req, res) => {
 //       try {
 //         // Получаем все документы из коллекции
